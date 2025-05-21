@@ -2,6 +2,9 @@
 
 A step-by-step tutorial for creating a fullstack application with Stripe payment integration. This template demonstrates how to build a complete payment flow using FastAPI for the backend and React for the frontend.
 
+![Stripe](./stripe.png)
+
+
 ## Features
 
 - 💳 Stripe Checkout integration for secure payments
