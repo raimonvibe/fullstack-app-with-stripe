@@ -27,6 +27,26 @@ interface Product {
   prices: Price[];
 }
 
+const getBaseUrl = (): string => {
+  if (import.meta.env.PROD) {
+    return 'https://fullstack-app-with-stripe.onrender.com';
+  }
+  return window.location.origin;
+};
+
+const validateUrl = (path: string): string => {
+  try {
+    const baseUrl = getBaseUrl();
+    const url = new URL(path, baseUrl);
+    const cleanPath = url.pathname.replace(/[^a-zA-Z0-9\/\-_]/g, '');
+    return new URL(cleanPath, baseUrl).toString();
+  } catch (error) {
+    console.error('URL validation error:', error);
+    const baseUrl = getBaseUrl();
+    return `${baseUrl}${path}`;
+  }
+};
+
 export default function PaymentForm() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,6 +84,13 @@ export default function PaymentForm() {
       console.log('Checkout initiated for price ID:', priceId);
       setCheckoutLoading(priceId);
       
+      const successUrl = validateUrl('/success');
+      const cancelUrl = validateUrl('/cancel');
+      console.log('Environment:', import.meta.env.PROD ? 'production' : 'development');
+      console.log('Base URL:', getBaseUrl());
+      console.log('Constructed URLs - Success:', successUrl, 'Cancel:', cancelUrl);
+      console.log('Window origin:', window.location.origin);
+      
       console.log('API URL:', `${import.meta.env.VITE_API_URL}/api/payment/create-checkout-session`);
       
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-checkout-session`, {
@@ -73,8 +100,8 @@ export default function PaymentForm() {
         },
         body: JSON.stringify({
           price_id: priceId,
-          success_url: `${window.location.origin}/success`,
-          cancel_url: `${window.location.origin}/cancel`,
+          success_url: successUrl,
+          cancel_url: cancelUrl,
         }),
       });
       
@@ -86,6 +113,7 @@ export default function PaymentForm() {
       
       const responseData = await response.json();
       console.log('Response data:', responseData);
+      console.log('Backend received URLs - checking for manipulation');
       
       const { url } = responseData;
       
