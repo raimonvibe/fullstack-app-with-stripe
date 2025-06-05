@@ -5,7 +5,6 @@
  * It provides feedback and options to try again.
  */
 
-import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 // In a real app, you would use: import { XCircle } from "lucide-react";

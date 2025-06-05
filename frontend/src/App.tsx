@@ -5,7 +5,6 @@
  * It sets up routing and the overall application structure.
  */
 
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PaymentForm from './components/PaymentForm';
 import SuccessPage from './pages/SuccessPage';
