@@ -5,7 +5,6 @@
  * It provides feedback to the user that their payment was processed successfully.
  */
 
-import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 // In a real app, you would use: import { CheckCircle } from "lucide-react";
