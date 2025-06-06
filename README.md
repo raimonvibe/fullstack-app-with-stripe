@@ -122,7 +122,14 @@ STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret_here
 FRONTEND_URL=https://your-frontend-service.onrender.com
 ```
 
-3. **SPA Routing**: The `_redirects` file in `frontend/public/` handles client-side routing for success/cancel pages.
+3. **SPA Routing Configuration**: Configure rewrite rules in Render Dashboard (not via _redirects file):
+   - Go to https://dashboard.render.com
+   - Navigate to your frontend static site service
+   - In "Redirects and Rewrites" section, add rule:
+     - Source: `/*`
+     - Destination: `/index.html`
+     - Action: "Rewrite" (NOT "Redirect")
+   - This serves React app content for all routes while preserving URLs
 
 **Important**: Replace the placeholder value with your actual Stripe publishable key from [Stripe Dashboard](https://dashboard.stripe.com/apikeys).
 
@@ -200,6 +207,66 @@ cd frontend
 npm run build
 <deploy_frontend dir="dist"/>
 ```
+
+## Render Deployment Configuration
+
+### Complete Render Setup for SPA Routing
+
+When deploying to Render, follow these steps to ensure proper SPA routing for `/success` and `/cancel` pages:
+
+#### Frontend Service Configuration
+1. **Service Type**: Static Site
+2. **Repository**: Your GitHub repository
+3. **Branch**: main
+4. **Root Directory**: frontend
+5. **Build Command**: `npm run build`
+6. **Publish Directory**: `dist`
+7. **Environment Variables**:
+   ```
+   VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_publishable_key_here
+   VITE_API_URL=https://your-backend-service.onrender.com
+   ```
+
+#### Critical SPA Routing Setup
+8. **Redirects and Rewrites**: In your Render dashboard, add this rewrite rule:
+   - **Source**: `/*`
+   - **Destination**: `/index.html`
+   - **Action**: "Rewrite" (NOT "Redirect")
+
+This configuration ensures that:
+- Direct access to `/success` loads correctly
+- Direct access to `/cancel` loads correctly
+- Checkout flow redirects work properly
+- React Router handles client-side navigation
+- Browser URLs remain unchanged (e.g., `/success`, `/cancel`)
+
+#### Backend Service Configuration
+1. **Service Type**: Web Service
+2. **Repository**: Your GitHub repository
+3. **Branch**: main
+4. **Root Directory**: backend
+5. **Build Command**: `poetry install`
+6. **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+7. **Environment Variables**:
+   ```
+   STRIPE_API_KEY=sk_test_your_stripe_secret_key_here
+   STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret_here
+   FRONTEND_URL=https://your-frontend-service.onrender.com
+   ```
+
+#### Why This Configuration Works
+- Render static sites require dashboard-based routing configuration
+- The `/*` wildcard catches all routes including `/success` and `/cancel`
+- Rewrite rules serve content without changing the URL
+- React Router can then handle client-side navigation
+- This is the official Render approach for SPA routing
+
+#### Troubleshooting SPA Routing
+If you encounter 404 errors for `/success` or `/cancel` pages:
+1. Verify the rewrite rule is configured as "Rewrite" not "Redirect"
+2. Ensure the rule appears as: `/* → /index.html (Rewrite)`
+3. Check that the rule is saved and deployment is complete
+4. Test direct access to both routes after configuration
 
 ## Extending the Template
 
