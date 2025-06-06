@@ -105,6 +105,25 @@ VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_publishable_key
 VITE_API_URL=http://localhost:8000
 ```
 
+### Production Deployment
+
+For production deployment on Render:
+
+1. **Frontend Environment Variables**: Create `.env.production` with production URLs:
+```
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_publishable_key_here
+VITE_API_URL=https://your-backend-service.onrender.com
+```
+
+2. **Backend Environment Variables**: Create `.env.production` with production frontend URL:
+```
+STRIPE_API_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret_here
+FRONTEND_URL=https://your-frontend-service.onrender.com
+```
+
+3. **SPA Routing**: The `_redirects` file in `frontend/public/` handles client-side routing for success/cancel pages.
+
 **Important**: Replace the placeholder value with your actual Stripe publishable key from [Stripe Dashboard](https://dashboard.stripe.com/apikeys).
 
 4. Start the development server:
