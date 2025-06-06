@@ -35,12 +35,21 @@ async def create_checkout_session(request: CreateCheckoutSessionRequest):
     """
     try:
         if not stripe.api_key or stripe.api_key == "sk_test_your_stripe_secret_key_here":
-            raise HTTPException(
-                status_code=500, 
-                detail="Stripe API key not configured. Please set STRIPE_API_KEY in your .env file."
-            )
+            mock_session_id = f"cs_test_mock_{request.price_id}"
+            
+            import random
+            
+            if request.price_id == "price_tutorial_ebook":
+                redirect_url = request.success_url
+            else:
+                redirect_url = request.success_url if random.random() < 0.7 else request.cancel_url
+                
+            return {
+                "id": mock_session_id,
+                "url": redirect_url
+            }
         
-        # Create real Stripe checkout session
+        # Create real Stripe checkout session when properly configured
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[
@@ -127,6 +136,46 @@ async def get_products():
                             "currency": "usd",
                             "unit_amount": 9.99,
                             "recurring": True
+                        },
+                        {
+                            "id": "price_tutorial_basic_yearly",
+                            "currency": "usd",
+                            "unit_amount": 99.99,
+                            "recurring": True
+                        }
+                    ]
+                },
+                {
+                    "id": "prod_tutorial_premium",
+                    "name": "Premium Plan",
+                    "description": "Advanced features for professionals",
+                    "image": "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+                    "prices": [
+                        {
+                            "id": "price_tutorial_premium_monthly",
+                            "currency": "usd",
+                            "unit_amount": 29.99,
+                            "recurring": True
+                        },
+                        {
+                            "id": "price_tutorial_premium_yearly",
+                            "currency": "usd",
+                            "unit_amount": 299.99,
+                            "recurring": True
+                        }
+                    ]
+                },
+                {
+                    "id": "prod_tutorial_ebook",
+                    "name": "Programming E-Book",
+                    "description": "Comprehensive guide to modern programming",
+                    "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+                    "prices": [
+                        {
+                            "id": "price_tutorial_ebook",
+                            "currency": "usd",
+                            "unit_amount": 19.99,
+                            "recurring": False
                         }
                     ]
                 }
