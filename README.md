@@ -4,6 +4,10 @@ A step-by-step tutorial for creating a fullstack application with Stripe payment
 
 ![Stripe](./stripe.png)
 
+## Stripe Payment Demo
+
+Check out the live frontend of this minimalist Stripe integration:  
+[Live Demo](https://fullstack-app-with-stripe.onrender.com/)
 
 ## Features
 
