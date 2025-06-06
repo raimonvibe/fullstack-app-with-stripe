@@ -60,7 +60,13 @@ cd fullstack-payment-app
 cd backend
 ```
 
-2. Create a `.env` file with your Stripe API keys:
+2. Install dependencies:
+
+```bash
+poetry install
+```
+
+3. Create a `.env` file with your Stripe API keys:
 
 ```
 STRIPE_API_KEY=sk_test_your_stripe_secret_key
@@ -68,7 +74,9 @@ STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret
 FRONTEND_URL=http://localhost:5173
 ```
 
-3. Start the FastAPI server:
+**Important**: Replace the placeholder values with your actual Stripe API keys from [Stripe Dashboard](https://dashboard.stripe.com/apikeys). The application will use mock data when Stripe keys are not configured.
+
+4. Start the FastAPI server:
 
 ```bash
 poetry run fastapi dev app/main.py
@@ -84,17 +92,24 @@ The API will be available at http://localhost:8000.
 cd frontend
 ```
 
-2. Create a `.env` file with your Stripe public key:
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file with your Stripe public key:
 
 ```
 VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_publishable_key
 VITE_API_URL=http://localhost:8000
 ```
 
-3. Install dependencies and start the development server:
+**Important**: Replace the placeholder value with your actual Stripe publishable key from [Stripe Dashboard](https://dashboard.stripe.com/apikeys).
+
+4. Start the development server:
 
 ```bash
-npm install
 npm run dev
 ```
 
@@ -104,20 +119,24 @@ The frontend will be available at http://localhost:5173.
 
 ### 1. Creating Products in Stripe
 
-Before using this application, you need to create products and prices in your Stripe dashboard:
+Before using this application with real Stripe integration, you need to create products and prices in your Stripe dashboard:
 
 1. Go to [Stripe Dashboard](https://dashboard.stripe.com/products)
 2. Click "Add Product"
 3. Fill in the product details and add a price
 4. Note the Price ID (starts with `price_`) - you'll need this for testing
 
+**Note**: The application will show mock products when Stripe API keys are not configured, allowing you to test the interface without setting up Stripe initially.
+
 ### 2. Backend API Endpoints
 
 The backend provides three main endpoints:
 
-- `GET /api/payment/products` - Retrieves products and prices from Stripe
+- `GET /api/payment/products` - Retrieves products and prices from Stripe (or mock data if not configured)
 - `POST /api/payment/create-checkout-session` - Creates a Stripe checkout session
 - `POST /api/payment/webhook` - Handles Stripe webhook events
+
+**Environment Configuration**: The backend automatically detects whether Stripe is properly configured and falls back to mock responses for development when API keys are missing.
 
 ### 3. Frontend Components
 

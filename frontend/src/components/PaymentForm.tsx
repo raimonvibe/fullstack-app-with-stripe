@@ -28,9 +28,6 @@ interface Product {
 }
 
 const getBaseUrl = (): string => {
-  if (import.meta.env.PROD) {
-    return 'https://fullstack-app-with-stripe.onrender.com';
-  }
   return window.location.origin;
 };
 
